@@ -1,4 +1,6 @@
-PyMuPDF
 pandas
+PyMuPDF
 requests
+sentence-transformers
+spacy
 tqdm
