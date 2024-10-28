@@ -124,7 +124,7 @@ def save_embeddings(document: list, file_path: str) -> None:
 
 # Main execution
 if __name__ == "__main__":
-  pdf_path = "rag.pdf"
+  pdf_path = "transformer.pdf"
   embeddings_df_save_path = "text_chunks_and_embeddings_df.csv"
 
   pages_and_texts = open_and_read_pdf(pdf_path)

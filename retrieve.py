@@ -80,11 +80,11 @@ def print_top_results_and_scores(
         doc.close()
 
 
-# Load text chunks and embeddings
-text_chunk_df = load_text_chunks("text_chunks_and_embeddings_df.csv")
-text_chunks = text_chunk_df.to_dict(orient="records")
-embeddings = convert_embeddings_to_tensor(text_chunk_df)
+# # Load text chunks and embeddings
+# text_chunk_df = load_text_chunks("text_chunks_and_embeddings_df.csv")
+# text_chunks = text_chunk_df.to_dict(orient="records")
+# embeddings = convert_embeddings_to_tensor(text_chunk_df)
 
-# Example usage
-query = input("Query")
-print_top_results_and_scores(query=query, embeddings=embeddings, text_chunks=text_chunks)
+# # Example usage
+# query = input("Query")
+
