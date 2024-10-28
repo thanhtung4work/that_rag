@@ -75,7 +75,7 @@ def chunk_sentences(document: list, chunk_size: int = 10) -> None:
 
 def join_chunk_sentences(document: list) -> list[dict]:
   """
-  Joins sentences within each chunk into a single string.
+  Joins sentences within each chunk into a single string (a paragraph).
 
   Args:
       document (list): A list of dictionaries containing page data and sentence chunks.
