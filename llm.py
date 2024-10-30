@@ -29,7 +29,7 @@ class LLMHandler:
         # Default generation arguments
         self.generation_args = {
             "max_new_tokens": 512,
-            # "return_full_text": False,
+            "return_full_text": False,
             # "do_sample": False,
         }
 
