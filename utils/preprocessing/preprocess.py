@@ -1,8 +1,11 @@
+import os
+
 import re
 import fitz
 import pandas as pd
 from sentence_transformers import SentenceTransformer
 from spacy.lang.en import English
+import torch
 from tqdm.auto import tqdm
 
 
@@ -16,12 +19,14 @@ def open_and_read_pdf(pdf_path: str) -> list[dict]:
   Returns:
       list[dict]: A list of dictionaries, each containing page statistics and text.
   """
-  doc = fitz.open(pdf_path)
   pages_and_texts = []
+
+  doc = fitz.open(pdf_path)
   for page_number, page in tqdm(enumerate(doc)):
     text = page.get_text()  # get plain text encoded as UTF-8
     text = text_formatter(text)
     pages_and_texts.append({
+      "document": pdf_path,
       "page_number": page_number,
       "page_char_count": len(text),
       "page_word_count": len(text.split(" ")),
@@ -30,6 +35,15 @@ def open_and_read_pdf(pdf_path: str) -> list[dict]:
       "text": text
     })
   return pages_and_texts
+
+
+def open_and_read_directory(dir_path: str) -> list[dict]:
+  document_pages_and_texts = []
+  for f in os.listdir(dir_path):
+    print("[INFO]: Reading ", f)
+    pages_and_texts = open_and_read_pdf(f"{dir_path}/{f}")
+    document_pages_and_texts.extend(pages_and_texts)
+  return document_pages_and_texts
 
 
 def text_formatter(text: str) -> str:
@@ -87,6 +101,7 @@ def join_chunk_sentences(document: list) -> list[dict]:
   for item in tqdm(document):
     for sentence_chunk in item["sentence_chunks"]:
       chunk_dict = {
+        "document": item["document"],
         "page_number": item["page_number"],
         "sentence_chunk": "".join(sentence_chunk).replace("  ", " ").strip()
       }
@@ -124,17 +139,17 @@ def save_embeddings(document: list, file_path: str) -> None:
 
 # Main execution
 if __name__ == "__main__":
-  pdf_path = "transformer.pdf"
-  embeddings_df_save_path = "text_chunks_and_embeddings_df.csv"
+  dir_path = "documents/"
+  embeddings_df_save_path = "data/text_chunks_and_embeddings_df.csv"
 
-  pages_and_texts = open_and_read_pdf(pdf_path)
+  pages_and_texts = open_and_read_directory(dir_path)
   extract_sentences(pages_and_texts)
   chunk_sentences(pages_and_texts)
   pages_and_chunks = join_chunk_sentences(pages_and_texts)
 
   embedding_model = SentenceTransformer(
     model_name_or_path="all-MiniLM-L6-v2",
-    device="cpu"
+    device="cuda" if torch.cuda.is_available() else "cpu"
   )
   create_embeddings(pages_and_chunks, embedding_model)
   save_embeddings(pages_and_chunks, embeddings_df_save_path)

@@ -1,8 +1,8 @@
+accelerate
+bitandbytes
 pandas
 PyMuPDF
 requests
 sentence-transformers
 spacy
 tqdm
-bitandbytes
-accelerate
